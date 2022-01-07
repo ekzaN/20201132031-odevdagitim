@@ -1,0 +1,88 @@
+<div class="container mt-5 ">
+  
+  <div class="row alert alert-danger" *ngIf="silme">
+    <div class="col-md-12">
+      <p>"<b>{{seckayit.adsoyad}}</b>"    Başlıklı Kayıt Silinecektir. Onaylıyor musunuz?</p>
+      <button class="btn btn-outline-danger btn-sm"(click)="Sil()">Evet</button>
+      <button class="btn btn-outline-danger btn-sm ml-2"(click)="silme=false;">Hayır</button>
+    </div>
+  </div>
+  
+  <div class="row" *ngIf="detay">
+<div class="col-md-6 alert alert-info text-dark">
+  <h5>Ad Soyad</h5>
+  <p>{{seckayit.adsoyad}}</p>
+  <h5>Ödev</h5>
+  <p>{{seckayit.odev}}</p>
+</div>
+<div class="col-md-6 alert alert-info text-dark">
+  <h5>Kayıt Tarihi</h5>
+  <p>{{seckayit.kayTarih | date:'dd.MM.yyyy HH:mm:ss'}}</p>
+  <h5>Düzenleme Tarihi</h5>
+  <p>{{seckayit.duzTarih | date:'dd.MM.yyyy HH:mm:ss'}}</p>
+
+  <h5>Durumu</h5>
+  <p>
+    <span class="badge badge-pill bg-success text-white" *ngIf="seckayit.islem">Tamamlandı</span>
+    <span class="badge badge-pill bg-danger text-white"*ngIf="!seckayit.islem">Tamamlanmadı</span>
+  </p>
+  <button class="btn btn-outline-danger btn-sm"(click)="detay=false;">Kapat</button>
+
+</div>
+  </div>
+  <div class="row" *ngIf="ekleduzenle">
+    <div class="col-md-12 alert alert-warning text-dark">
+      <h4>Kayıt Ekle ve Düzenle</h4>
+      <form #frm="ngForm" (submit)="Kaydet()">
+        <div class="form-group">
+          <label>Ad Soyad</label>
+          <input type="text" class="form-control" name="adsoyad" [(ngModel)]="seckayit.adsoyad">
+        </div>
+        <div class="form-group">
+          <label>Ödev</label>
+          <input type="text" class="form-control" name="odev" [(ngModel)]="seckayit.odev">
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Kaydet" class="btn btn-outline-success btn-sm">
+          <button class="btn btn-outline-danger btn-sm ml-2"(click)="ekleduzenle=false;">Kapat</button>
+        </div>
+      </form>
+      <div [ngClass]="sonuc.islem ? 'alert alert-success':'alert alert-danger'" *ngIf="sonuc.mesaj?.length>0">{{sonuc.mesaj}}</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Kayıtlar</h4>
+      <button class="btn btn-outline-info btn-sm" (click)="ekleduzenle=true;">Kayıt Ekle</button>
+      <button class="btn btn-outline-danger btn-sm ml-1" *ngIf="fbServis.OturumKontrol()" (click)="OturumuKapat()">Oturumu Kapat</button>
+      <table class="table mt-2">
+        <thead>
+          <td>AdSoyad</td>
+          <td>Durumu</td>
+          <td>İşlem</td>
+          <td>Detay</td>
+          <td>Düzenle</td>
+          <td>Sil</td>
+        </thead>
+        <tbody>
+          <tr *ngFor="let kayit of kayitlar">
+            <td>{{kayit.adsoyad}}</td>
+            <td>
+              <span class="badge badge-pill bg-success text-white" *ngIf="kayit.islem">Tamamlandı</span>
+              <span class="badge badge-pill bg-danger text-white"*ngIf="!kayit.islem">Tamamlanmadı</span>
+            </td>
+            <td>
+              <button class="btn btn-outline-success btn-sm" (click)="TamamlaIptal(kayit,true)" *ngIf="!kayit.islem">Tamamlandı Yap</button>
+              <button class="btn btn-outline-danger btn-sm" (click)="TamamlaIptal(kayit,false)" *ngIf="kayit.islem">Tamamlanmadı Yap</button>
+            
+            </td>
+            <td><button class="btn btn-outline-info btn-sm"(click)="KayitSec(kayit);detay=true;">Detay</button></td>
+            <td><button class="btn btn-outline-warning btn-sm"(click)="KayitSec(kayit);ekleduzenle=true;" >Düzenle</button></td>
+            <td><button class="btn btn-outline-danger btn-sm"(click)="KayitSec(kayit);silme=true;">Sil</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
